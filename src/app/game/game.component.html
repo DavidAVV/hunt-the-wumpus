@@ -1,0 +1,50 @@
+<h1>Hunt the Wumpus</h1>
+
+<p>{{ message }}</p>
+
+<div class="actions" *ngIf="!gameStart">
+  <button (click)="initializeGame(3, 1, 3)">Fácil</button>
+  <button (click)="initializeGame(5, 3, 3)">Normal</button>
+  <button (click)="initializeGame(8, 5, 2)">Difícil</button>
+</div>
+
+<div *ngIf="gameStart">
+  <p>{{ perceptionMessage }}</p>
+  <p>Flechas: {{ numArrows }}.</p>
+  <table>
+    <tr *ngFor="let row of board; let i = index">
+      <td *ngFor="let cell of row; let j = index" [ngClass]="{ visited: cell.visited || cell.content === CellContent.Start || cell.content === CellContent.Entrance }">
+        <div class="content">
+          <div class="gate" *ngIf="cell.content === CellContent.Entrance">
+            <img src="assets/gate.png">
+          </div>
+          <div class="wumpus" *ngIf="cell.content === CellContent.Wumpus">
+            <img *ngIf="cell.visited" src="assets/wumpus.png">
+          </div>
+          <div *ngIf="i === player.x && j === player.y && cell.content !== CellContent.Pit && cell.content !== CellContent.Wumpus">
+            <img *ngIf="player.direction === 'Debajo'" src="assets/player.png" class="player">
+            <img *ngIf="player.direction === 'Encima'" src="assets/player_back.png" class="player">
+            <img *ngIf="player.direction === 'Derecha'" src="assets/player_right.png" class="player">
+            <img *ngIf="player.direction === 'Izquierda'" src="assets/player_left.png" class="player">
+          </div>
+          <div class="pit" *ngIf="cell.content === CellContent.Pit">
+            <img *ngIf="cell.visited" src="assets/pit.png">
+          </div>
+          <div class="gold" *ngIf="cell.content === CellContent.Gold && !player.hasGold">
+            <img *ngIf="cell.visited" src="assets/gold.png">
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+  
+  <div class="actions">
+    <button (click)="performAction(Action.MoveForward)">Avanzar</button>
+    <button (click)="performAction(Action.TurnLeft)">Girar a la izquierda</button>
+    <button (click)="performAction(Action.TurnRight)">Girar a la derecha</button>
+    <button (click)="performAction(Action.ShootArrow)">Lanzar una flecha</button>
+    <button (click)="revealMap()">Revelar Mapa</button>
+    <button (click)="exit()">Salir</button>
+    <button (click)="ngOnInit()">Reiniciar</button>
+  </div>
+</div>
